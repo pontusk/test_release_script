@@ -11,6 +11,7 @@ from="$1"
 to="$2"
 if [ -z "$from" ] || [ -z "$to" ]; then
   echo "$usage"
+  exit 1
 fi
 
 # token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
