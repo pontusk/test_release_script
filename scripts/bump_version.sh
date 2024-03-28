@@ -18,7 +18,7 @@ old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' p
 version=
 
 function question {
-  echo "Your current version is '$old_version'. What would you like the new version to be? Leave blank to keep the current version."
+  printf "Your current version is '%s'.\nWhat would you like the new version to be?\nLeave blank to keep the current version." "$old_version"
   read -r answer
   if ! [[ "$answer" =~ ^\d+\.\d+\.\d+$ ]]; then
     echo "Please input a semver number ex. '1.0.4'."
