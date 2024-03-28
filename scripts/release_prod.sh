@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-./bump_version.sh
-
 command -v op >/dev/null 2>&1 || {
   echo >&2 "I require 1Password CLI but it's not installed. Aborting."
   exit 1
