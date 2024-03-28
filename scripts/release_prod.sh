@@ -34,7 +34,7 @@ function cleanup {
 }
 
 if [[ "$cur_branch" != "$from" ]]; then
-  echo "Please check out '$from' and try again."
+  echo "On the wrong branch. Swiching to '$from'. Please try again."
   cleanup
   exit 1
 fi
