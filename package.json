@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release:staging": "bash $(pwd)/scripts/bump_version.sh minor repo staging && bash $(pwd)/scripts/release_prod.sh main staging",
-    "release:prod": "bash $(pwd)/scripts/bump_version.sh minor repo prod && bash $(pwd)/scripts/release_prod.sh staging prod"
+    "release:staging": "bash $(pwd)/scripts/bump_version.sh ${:-none} repo staging && bash $(pwd)/scripts/release_prod.sh main staging",
+    "release:prod": "bash $(pwd)/scripts/bump_version.sh ${:-none} repo prod && bash $(pwd)/scripts/release_prod.sh staging prod"
   },
   "author": "",
   "license": "ISC"

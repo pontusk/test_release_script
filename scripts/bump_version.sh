@@ -1,6 +1,9 @@
 #!/bin/bash
 
 version="$1"
+if [[ "$version" == "none" ]]; then
+  exit 0
+fi
 package="$2"
 if [[ "$package" == "repo" ]]; then
   package=""
