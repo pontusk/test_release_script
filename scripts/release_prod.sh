@@ -24,6 +24,17 @@ cur_origin="$(git remote get-url origin)"
 # How many commits are ahead of main in the 'from' branch
 ahead="$(git rev-list --left-right --count "$from"..."$to" | awk '{ print $1 }')"
 
+function cleanup {
+  message="$(git log -1 --pretty=%B)"
+
+  if [[ $message =~ 'bump version' ]]; then
+    echo "Match"
+  fi
+
+  git reset --hard HEAD~1 \
+    && git remote set-url origin "$cur_origin"
+}
+
 if ((ahead > 0)); then
   echo "The '$from' branch is ahead by '$ahead' commits. Merge any quick fixes to '$from' into '$to' and try again."
   git remote set-url origin "$cur_origin"
@@ -59,9 +70,7 @@ else
   (git checkout "$from" \
     && git reset --hard "$to" \
     && git push --force \
-    && git checkout -) || {
-    git remote set-url origin "$cur_origin"
-  }
+    && git checkout -) || cleanup
 fi
 
 git remote set-url origin "$cur_origin"
