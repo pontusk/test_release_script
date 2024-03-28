@@ -1,11 +1,11 @@
 {
   "name": "test_release_script",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "scripts/bump_version.sh && scripts/release_prod.sh"
+    "publish": "bash $(pwd)/scripts/bump_version.sh && bash $(pwd)/scripts/release_prod.sh"
   },
   "author": "",
   "license": "ISC"
