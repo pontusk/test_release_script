@@ -7,6 +7,7 @@ command -v op >/dev/null 2>&1 || {
 
 usage="scripts/$(basename "$0") <from branch> <to branch> [<package name>]"
 
+cur_branch="$(git rev-parse --abrev-ref HEAD)"
 from="$1"
 to="$2"
 if [ -z "$from" ] || [ -z "$to" ]; then
@@ -26,7 +27,8 @@ ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $1 }')
 
 function post {
   (git checkout "$from" \
-    && git push --no-verify) || return 1
+    && git push --no-verify \
+    && git checkout "$cur_branch") || return 1
 }
 
 function cleanup {
@@ -39,6 +41,7 @@ function cleanup {
   fi
 
   git remote set-url origin "$cur_origin"
+  git checkout "$cur_branch"
 }
 
 function tag {
