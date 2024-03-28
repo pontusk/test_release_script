@@ -17,15 +17,28 @@ fi
 old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
 version=
 
+function check_version {
+  perl -sle '''
+    my ($major, $minor, $patch) = $version =~ /(\d+)\.(\d+)\.(\d+)/;
+    my ($o_major, $o_minor, $o_patch) = $old_version =~ /(\d+)\.(\d+)\.(\d+)/;
+
+    if ($major > $o_major) { exit 0; }
+    if ($major == $o_major && $minor > $o_minor) { exit 0; }
+    if ($major == $o_major && $minor == $o_minor && $patch > $o_patch) { exit 0; }
+
+    die "Invalid version $version.";
+''' -- -version="$1" -old_version="$old_version"
+}
+
 function question {
-  printf "Your current version is '%s'. What would you like the new version to be?\nLeave blank to keep the current version.\n" "$old_version"
+  printf "Your current version is '%s'. Input new version.\nLeave blank to keep the current version.\n" "$old_version"
   read -r answer
   if [[ "$answer" == "" ]]; then
     echo "Keeping version $old_version."
     exit 0
   fi
-  if ! [[ $answer =~ ^\d+\.\d+\.\d+$ ]]; then
-    echo "Please input a semver number ex. '1.0.4'."
+  if ! check_version "$answer"; then
+    echo "Please input a semver number ex. '1.0.4', which is larger than the current version."
     question
   fi
   version="$answer"
