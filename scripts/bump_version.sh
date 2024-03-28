@@ -20,12 +20,13 @@ version=
 function question {
   printf "Your current version is '%s'. What would you like the new version to be?\nLeave blank to keep the current version.\n" "$old_version"
   read -r answer
+  if [[ "$answer" == "" ]]; then
+    echo "Keeping version $old_version."
+    exit 0
+  fi
   if ! [[ $answer =~ ^\d+\.\d+\.\d+$ ]]; then
     echo "Please input a semver number ex. '1.0.4'."
     question
-  fi
-  if [[ "$answer" == "" ]]; then
-    exit 0
   fi
   version="$answer"
 }
