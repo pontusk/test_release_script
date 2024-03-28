@@ -27,17 +27,17 @@ ahead="$(git rev-list --left-right --count "$from"..."$to" | awk '{ print $1 }')
 function cleanup {
   message="$(git log -1 --pretty=%B)"
 
-  if [[ $message =~ 'bump version' ]]; then
-    echo "Match"
+  if [[ $message =~ 'Bump version' ]]; then
+    git reset --hard HEAD~1
+    echo "Removing commit '$message'"
   fi
 
-  git reset --hard HEAD~1 \
-    && git remote set-url origin "$cur_origin"
+  git remote set-url origin "$cur_origin"
 }
 
 if ((ahead > 0)); then
   echo "The '$from' branch is ahead by '$ahead' commits. Merge any quick fixes to '$from' into '$to' and try again."
-  git remote set-url origin "$cur_origin"
+  cleanup
   exit 1
 fi
 
@@ -46,7 +46,7 @@ function question {
   case $answer in
     y | Y) ;;
     n | N | "")
-      git remote set-url origin "$cur_origin"
+      cleanup
       exit 0
       ;;
     *)
@@ -63,9 +63,7 @@ if [[ $to == "prod" ]]; then
   (git checkout "$from" \
     && git reset --hard "$to" \
     && git tag "v$ver" \
-    && git push --tags --force) || {
-    git remote set-url origin "$cur_origin"
-  }
+    && git push --tags --force) || cleanup
 else
   (git checkout "$from" \
     && git reset --hard "$to" \
