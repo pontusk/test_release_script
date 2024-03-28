@@ -1,12 +1,12 @@
 {
   "name": "test_release_script",
-  "version": "1.18.3",
+  "version": "1.19.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release:staging": "bash $(pwd)/scripts/bump_version.sh repo staging && bash $(pwd)/scripts/release_prod.sh main staging",
-    "release:prod": "bash $(pwd)/scripts/bump_version.sh repo prod && bash $(pwd)/scripts/release_prod.sh staging prod"
+    "release:staging": "scripts/bump_version.sh repo staging && scripts/release_prod.sh main staging",
+    "release:prod": "scripts/bump_version.sh repo prod && bash scripts/release_prod.sh staging prod"
   },
   "author": "",
   "license": "ISC"
