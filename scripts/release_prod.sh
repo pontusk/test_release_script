@@ -16,13 +16,13 @@ fi
 
 # token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
 
-git pull origin "$from"
+git pull origin "$to"
 
 cur_origin="$(git remote get-url origin)"
 # git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of main in the 'from' branch
-ahead="$(git rev-list --left-right --count "$from"..."$to" | awk '{ print $1 }')"
+ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $1 }')"
 
 function cleanup {
   message="$(git log -1 --pretty=%B)"
@@ -36,13 +36,13 @@ function cleanup {
 }
 
 if ((ahead > 0)); then
-  echo "The '$from' branch is ahead by '$ahead' commits. Merge any quick fixes to '$from' into '$to' and try again."
+  echo "The '$to' branch is ahead by '$ahead' commits. Merge any quick fixes to '$to' into '$from' and try again."
   cleanup
   exit 1
 fi
 
 function question {
-  read -r -p "Are you sure you want to release '$from'? This will reset the '$from' branch to '$to'. (y/N) " answer
+  read -r -p "Are you sure you want to release '$to'? This will reset the '$to' branch to '$from'. (y/N) " answer
   case $answer in
     y | Y) ;;
     n | N | "")
@@ -60,12 +60,12 @@ question
 ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
 
 if [[ $to == "prod" ]]; then
-  (git checkout "$from" \
-    && git reset --hard "$to" \
+  (git checkout "$to" \
+    && git reset --hard "$from" \
     && git tag "v$ver" \
     && git push --tags --force) || cleanup
 else
-  (git checkout "$from" \
+  (git checkout "$to" \
     && git reset --hard "$to" \
     && git push --force \
     && git checkout -) || cleanup
