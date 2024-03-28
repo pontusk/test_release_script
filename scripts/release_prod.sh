@@ -41,6 +41,11 @@ function cleanup {
   git remote set-url origin "$cur_origin"
 }
 
+function tag {
+  ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
+  git tag "v$ver" || return 1
+}
+
 if ((ahead > 0)); then
   echo "The '$to' branch is ahead by '$ahead' commits. Merge any quick fixes to '$to' into '$from' and try again."
   cleanup
@@ -63,14 +68,11 @@ function question {
 }
 question
 
-ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
-
 if [[ $to == "prod" ]]; then
   (git checkout "$to" \
     && git reset --hard "$from" \
-    && git tag "v$ver" \
-    && git push --tags --force \
-    && post) || cleanup
+    && tag \
+    && git push --tags --force) || cleanup
 else
   (git checkout "$to" \
     && git reset --hard "$from" \
