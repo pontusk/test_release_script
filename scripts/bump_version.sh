@@ -29,7 +29,7 @@ regex='^.*1 file.*1 insertion.*1 deletion.*$'
 
 if [[ $changed =~ $regex ]]; then
   git add . \
-    && git commit -m "chore: Bump${package:+"@timeedit/registration-$package "} version to $ver"
+    && git commit -m "chore: Bump${package:+" @timeedit/registration-$package"} version to $ver"
 else
   echo "You have additional diffs beyond the version change. Please commit, push and try again."
   echo "$changed"
