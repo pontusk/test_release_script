@@ -7,7 +7,7 @@ command -v op >/dev/null 2>&1 || {
 
 usage="scripts/$(basename "$0") <from branch> <to branch> [<package name>]"
 
-cur_branch="$(git rev-parse --abrev-ref HEAD)"
+cur_branch="$(git rev-parse --abbrev-ref HEAD)"
 from="$1"
 to="$2"
 if [ -z "$from" ] || [ -z "$to" ]; then
