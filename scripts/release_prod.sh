@@ -5,7 +5,7 @@ command -v op >/dev/null 2>&1 || {
   exit 1
 }
 
-usage="$0 <from branch> <to branch> [<package name>]"
+usage="scripts/$(basename "$0") <from branch> <to branch> [<package name>]"
 
 from="$1"
 to="$2"

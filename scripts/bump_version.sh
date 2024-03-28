@@ -2,6 +2,12 @@
 
 version="$1"
 package="$2"
+usage="scripts/$(basename "$0") <major|minor|patch> [<package name>]"
+
+if [ -z "$version" ]; then
+  echo "$usage"
+  exit 1
+fi
 
 function version_bump {
   perl -i -slane '''
