@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "bash $(pwd)/scripts/bump_version.sh && bash $(pwd)/scripts/release_prod.sh"
+    "publish:staging": "bash $(pwd)/scripts/bump_version.sh && bash $(pwd)/scripts/release_prod.sh",
+    "publish:prod": "bash $(pwd)/scripts/bump_version.sh && bash $(pwd)/scripts/release_prod.sh"
   },
   "author": "",
   "license": "ISC"
