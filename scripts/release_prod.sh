@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+./bump_version.sh
+
 command -v op >/dev/null 2>&1 || {
   echo >&2 "I require 1Password CLI but it's not installed. Aborting."
   exit 1
 }
 
-usage="scripts/$(basename "$0") <from branch> <to branch> [<package name>]"
+usage="scripts/$(basename "$0") <from branch> <to branch> <release> <version:major|minor|patch|none>"
 
 cur_branch="$(git rev-parse --abbrev-ref HEAD)"
 from="$1"

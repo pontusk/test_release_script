@@ -1,42 +1,43 @@
 #!/bin/bash
 
-version="$1"
-if [[ "$version" == "none" ]]; then
-  exit 0
-fi
-package="$2"
+package="$1"
 if [[ "$package" == "repo" ]]; then
   package=""
 else
   package=" @timeedit/registration-$package"
 fi
-release_branch="$3"
-usage="scripts/$(basename "$0") <major|minor|patch> <package name|'repo'>] [<release branch>]"
+release_branch="$2"
+usage="scripts/$(basename "$0") <package name|'repo'>] [<release branch>]"
 
-if [ -z "$version" ]; then
+if [ -z "$package" ]; then
   echo "$usage"
   exit 1
 fi
 
-function version_bump {
-  perl -i -slane '''
+old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
+version=
+
+function question {
+  read -r -p "Your current version is '$old_version'. What would you like the new version to be? Leave blank to keep the current version." answer
+  if ! [[ "$answer" =~ ^(\d+)\.(\d+)\.(\d+)$ ]]; then
+    echo "Please input a semver number ex. '1.0.4'."
+    question
+  fi
+  if [[ "$answer" == "" ]]; then
+    exit 0
+  fi
+  version="$answer"
+}
+question
+
+perl -i -slane '''
 if (/^\s*"version"/) {
-    my ($pre, $major, $minor, $patch) = $_ =~ /^(\s*"version":\s?)"(\d+)\.(\d+)\.(\d+)"/;
-
-    if ($version =~ /major/) { $major++; $minor = 0; $patch = 0; }
-    if ($version =~ /minor/) { $minor++; $patch = 0; }
-    if ($version =~ /patch/) { $patch++; }
-
-    print "$pre\"$major.$minor.$patch\",";
+    my ($pre) = $_ =~ /^(\s*"version":\s?)"\d+\.\d+\.\d+"/;
+    print "$pre\"$version\",";
 } else {
     print $_;
 }
-''' -- -version="$version" "$1"
-}
-
-version_bump package.json
-
-ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
+''' -- -version="$version" package.json
 
 changed=$(git diff --shortstat)
 
