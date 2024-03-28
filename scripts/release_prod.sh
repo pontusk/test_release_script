@@ -8,6 +8,7 @@ command -v op >/dev/null 2>&1 || {
 usage="scripts/$(basename "$0") <from branch> <to branch> <release> <version:major|minor|patch|none>"
 
 cur_branch="$(git rev-parse --abbrev-ref HEAD)"
+cur_origin="$(git remote get-url origin)"
 
 from="$1"
 to="$2"
@@ -43,7 +44,6 @@ fi
 
 git pull origin "$to"
 
-cur_origin="$(git remote get-url origin)"
 # git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of main in the 'from' branch
