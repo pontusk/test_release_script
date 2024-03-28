@@ -2,7 +2,11 @@
 
 version="$1"
 package="$2"
-usage="scripts/$(basename "$0") <major|minor|patch> [<package name>]"
+if [ -n "$package" ]; then
+  shift
+fi
+release_branch="$2"
+usage="scripts/$(basename "$0") <major|minor|patch> [<package name>] [<release branch>]"
 
 if [ -z "$version" ]; then
   echo "$usage"
@@ -35,7 +39,7 @@ regex='^.*1 file.*1 insertion.*1 deletion.*$'
 
 if [[ $changed =~ $regex ]]; then
   git add . \
-    && git commit -m "chore: Bump${package:+" @timeedit/registration-$package"} version to $ver"
+    && git commit -m "chore: Bump${package:+" @timeedit/registration-$package"} version to $ver.${release_branch:+" Release to '$release_banch'."}"
 else
   echo "You have additional diffs beyond the version change. Please commit, push and try again."
   echo "$changed"
