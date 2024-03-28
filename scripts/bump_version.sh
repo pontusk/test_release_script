@@ -2,11 +2,11 @@
 
 version="$1"
 package="$2"
-if [ -n "$package" ]; then
-  shift
+if [[ "$package" == "repo" ]]; then
+  package=""
 fi
-release_branch="$2"
-usage="scripts/$(basename "$0") <major|minor|patch> [<package name>] [<release branch>]"
+release_branch="$3"
+usage="scripts/$(basename "$0") <major|minor|patch> <package name|'repo'>] [<release branch>]"
 
 if [ -z "$version" ]; then
   echo "$usage"
