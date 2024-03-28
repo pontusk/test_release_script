@@ -41,7 +41,7 @@ regex='^.*1 file.*1 insertion.*1 deletion.*$'
 
 if [[ $changed =~ $regex ]]; then
   git add . \
-    && git commit -m "chore: Bump${package} version to $ver.${release_branch:+" Release to '$release_banch'."}"
+    && git commit -m "chore: Bump${package} version to $ver.${release_branch:+" Release to '$release_branch'."}"
 else
   echo "You have additional diffs beyond the version change. Please commit, push and try again."
   echo "$changed"
