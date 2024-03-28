@@ -18,8 +18,8 @@ old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' p
 version=
 
 function question {
-  read -r -p "Your current version is '$old_version'. What would you like the new version to be? Leave blank to keep the current version." answer
-  if ! [[ "$answer" =~ ^(\d+)\.(\d+)\.(\d+)$ ]]; then
+  read -r -p "Your current version is '$old_version'. What would you like the new version to be? Leave blank to keep the current version.\n" answer
+  if ! [[ "$answer" =~ ^\d+\.\d+\.\d+$ ]]; then
     echo "Please input a semver number ex. '1.0.4'."
     question
   fi
@@ -45,7 +45,7 @@ regex='^.*1 file.*1 insertion.*1 deletion.*$'
 
 if [[ $changed =~ $regex ]]; then
   git add . \
-    && git commit -m "chore: Bump${package} version to $ver.${release_branch:+" Release to '$release_branch'."}"
+    && git commit -m "chore: Bump${package} version to $version.${release_branch:+" Release to '$release_branch'."}"
 else
   echo "You have additional diffs beyond the version change. Please commit, push and try again."
   echo "$changed"
