@@ -36,6 +36,7 @@ function cleanup {
 if [[ "$cur_branch" != "$from" ]]; then
   echo "Please check out '$from' and try again."
   cleanup
+  exit 1
 fi
 
 # token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
