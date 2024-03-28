@@ -8,6 +8,7 @@ command -v op >/dev/null 2>&1 || {
 usage="scripts/$(basename "$0") <from branch> <to branch> <release> <version:major|minor|patch|none>"
 
 cur_branch="$(git rev-parse --abbrev-ref HEAD)"
+
 from="$1"
 to="$2"
 if [ -z "$from" ] || [ -z "$to" ]; then
@@ -15,20 +16,9 @@ if [ -z "$from" ] || [ -z "$to" ]; then
   exit 1
 fi
 
-# token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
-
-git pull origin "$to"
-
-cur_origin="$(git remote get-url origin)"
-# git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
-
-# How many commits are ahead of main in the 'from' branch
-ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $1 }')"
-
 function post {
   (git checkout "$from" \
-    && git push --no-verify \
-    && git checkout "$cur_branch") || return 1
+    && git push --no-verify) || return 1
 }
 
 function cleanup {
@@ -41,8 +31,22 @@ function cleanup {
   fi
 
   git remote set-url origin "$cur_origin"
-  git checkout "$cur_branch"
 }
+
+if [[ "$cur_branch" != "$from" ]]; then
+  echo "Please check out '$from' and try again."
+  cleanup
+fi
+
+# token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
+
+git pull origin "$to"
+
+cur_origin="$(git remote get-url origin)"
+# git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
+
+# How many commits are ahead of main in the 'from' branch
+ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $1 }')"
 
 function tag {
   ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
