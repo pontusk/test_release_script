@@ -24,8 +24,16 @@ cur_origin="$(git remote get-url origin)"
 # How many commits are ahead of main in the 'from' branch
 ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $1 }')"
 
+function prep {
+  (git checkout "$from" \
+    && git push --no-verify \
+    && git reset --hard HEAD \
+    && git clean -f) || return 1
+}
+
 function cleanup {
   message="$(git log -1 --pretty=%B)"
+  git checkout "$from"
 
   if [[ $message =~ 'Bump version' ]]; then
     git reset --hard HEAD~1
@@ -60,15 +68,16 @@ question
 ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
 
 if [[ $to == "prod" ]]; then
-  (git checkout "$to" \
+  (prep \
+    && git checkout "$to" \
     && git reset --hard "$from" \
     && git tag "v$ver" \
     && git push --tags --force) || cleanup
 else
-  (git checkout "$to" \
-    && git reset --hard "$to" \
-    && git push --force \
-    && git checkout -) || cleanup
+  (prep \
+    && git checkout "$to" \
+    && git reset --hard "$from" \
+    && git push --force) || cleanup
 fi
 
 git remote set-url origin "$cur_origin"
