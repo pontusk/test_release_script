@@ -1,6 +1,10 @@
 #!/bin/bash
 
 package="$1"
+if [ -z "$package" ]; then
+  echo "$usage"
+  exit 1
+fi
 if [[ "$package" == "repo" ]]; then
   package=""
 else
@@ -8,11 +12,6 @@ else
 fi
 release_branch="$2"
 usage="scripts/$(basename "$0") <package name|'repo'>] [<release branch>]"
-
-if [ -z "$package" ]; then
-  echo "$usage"
-  exit 1
-fi
 
 old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
 version=
