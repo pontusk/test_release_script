@@ -3,7 +3,7 @@
 version="$1"
 package="$2"
 if [[ "$package" == "repo" ]]; then
-  package=
+  unset package
 fi
 release_branch="$3"
 usage="scripts/$(basename "$0") <major|minor|patch> <package name|'repo'>] [<release branch>]"
