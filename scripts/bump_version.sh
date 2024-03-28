@@ -3,7 +3,7 @@
 version="$1"
 package="$2"
 if [[ "$package" == "repo" ]]; then
-  unset package
+  package=""
 else
   package=" @timeedit/registration-$package"
 fi
