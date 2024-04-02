@@ -50,7 +50,7 @@ fi
 
 # token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
 
-git pull origin "$to" || exit 1
+git fetch || exit 1
 
 # git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
