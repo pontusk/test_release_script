@@ -32,7 +32,7 @@ function post {
       local revs
       revs="$(git rev-list --left-right --count main..."$from")"
       echo "revs $revs"
-      # If the latest commit is the one we want and it's the only difference between the branches
+      # If the latest commit is the one we want and it's the only difference between the branches.
       if [[ $message =~ (Bump version)|(Release to) ]] && [[ $revs =~ 0\t1 ]]; then
         git checkout main \
           && git rebase "$from" \
