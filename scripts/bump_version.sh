@@ -18,13 +18,13 @@ version=
 
 function check_version {
   perl -sle '''
-    my ($major, $minor, $patch) = $version =~ /(\d+)\.(\d+)\.(\d+).*/;
-    my ($o_major, $o_minor, $o_patch) = $old_version =~ /(\d+)\.(\d+)\.(\d+).*/;
-
+    my ($major, $minor, $patch, $suffix) = $version =~ /(\d+)\.(\d+)\.(\d+)(.*)/;
+    my ($o_major, $o_minor, $o_patch, $o_suffix) = $old_version =~ /(\d+)\.(\d+)\.(\d+)(.*)/;
+    print "$suffix $o_suffix";
     if ($major > $o_major) { exit 0; }
     if ($major == $o_major && $minor > $o_minor) { exit 0; }
     if ($major == $o_major && $minor == $o_minor && $patch > $o_patch) { exit 0; }
-
+    if ($major == $o_major && $minor == $o_minor && $patch == $o_patch && $suffix =~ /^[-_a-zA-Z]+$/ && $suffix ne $o_suffix) { exit 0; }
     die "Invalid version $version.";
 ''' -- -version="$1" -old_version="$old_version"
 }
