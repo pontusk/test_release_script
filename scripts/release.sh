@@ -54,7 +54,7 @@ function tag {
   git tag "v$ver" || return 1
 }
 
-if ((ahead > 0)); then
+if [[ $ahead != "0" ]]; then
   echo "The '$to' branch is ahead by '$ahead' commits. Merge any quick fixes to '$to' into '$from' and try again."
   cleanup
   exit 1
