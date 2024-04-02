@@ -18,8 +18,8 @@ version=
 
 function check_version {
   perl -sle '''
-    my ($major, $minor, $patch) = $version =~ /(\d+)\.(\d+)\.(\d+)/;
-    my ($o_major, $o_minor, $o_patch) = $old_version =~ /(\d+)\.(\d+)\.(\d+)/;
+    my ($major, $minor, $patch) = $version =~ /(\d+)\.(\d+)\.(\d+).*/;
+    my ($o_major, $o_minor, $o_patch) = $old_version =~ /(\d+)\.(\d+)\.(\d+).*/;
 
     if ($major > $o_major) { exit 0; }
     if ($major == $o_major && $minor > $o_minor) { exit 0; }
