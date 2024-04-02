@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
+#
+red=$(tput setaf 2)
+normal=$(tput setaf 7)
 
 command -v op >/dev/null 2>&1 || {
-  echo >&2 "I require 1Password CLI but it's not installed. Aborting."
+  echo >&2 "${red}I require 1Password CLI but it's not installed. Aborting.${normal}"
   exit 1
 }
 
@@ -40,7 +43,7 @@ function cleanup {
 }
 
 if [[ "$cur_branch" != "$from" ]]; then
-  echo "On the wrong branch. Swiching to '$from'. Please try again."
+  printf "\n${red}On the wrong branch. Swiching to '%s'. Please try again.${normal}\n\n", "$from"
   cleanup
   exit 1
 fi
@@ -60,7 +63,7 @@ function tag {
 }
 
 if ((ahead > 0)); then
-  echo "The '$to' branch is ahead by '$ahead' commits. Merge any quick fixes to '$to' into '$from' and try again."
+  printf "\n${red}The '%s' branch is ahead by '%s' commits. Merge any quick fixes to '%s' into '%s' and try again.${normal}\n\n", "$to", "$ahead", "$to", "$from"
   cleanup
   exit 1
 fi
