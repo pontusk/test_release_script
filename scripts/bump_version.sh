@@ -49,7 +49,7 @@ question
 
 perl -i -slane '''
 if (/^\s*"version"/) {
-    my ($pre) = $_ =~ /^(\s*"version":\s?)"\d+\.\d+\.\d+"/;
+    my ($pre) = $_ =~ /^(\s*"version":\s?)"\d+\.\d+\.\d+.*"/;
     print "$pre\"$version\",";
 } else {
     print $_;
