@@ -26,6 +26,7 @@ function post {
       && git push --no-verify) || return 1
   else
     (git checkout "$from" && {
+      local message
       message="$(git log -1 --pretty=%B)"
       if [[ $message =~ (Bump version)|(Release to) ]]; then
         hash="$(git log -n 1 --pretty=format:"%H")"
@@ -33,15 +34,18 @@ function post {
         git cherry-pick --allow-empty "$hash"
       fi
     } && git push --no-verify origin main "$from") || return 1
-
+    git checkout "$cur_branch"
   fi
 
 }
 
 function cleanup_commit {
+  local message
   message="$(git log -1 --pretty=%B)"
+  local cur_branch
   cur_branch="$(git rev-parse --abbrev-ref HEAD)"
   # Avoid removing commits if remote is up to date
+  local ahead
   ahead="$(git rev-list --left-right --count "$cur_branch"...origin/"$cur_branch" | perl -F -lane '{ print $F[0] }')"
   if [[ $message =~ (Bump version)|(Release to) ]] && ((ahead > 0)); then
     git reset --hard HEAD~1
