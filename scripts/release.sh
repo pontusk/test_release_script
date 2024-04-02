@@ -174,8 +174,9 @@ if [[ $to == "prod" ]]; then
 else
   (git checkout "$to" \
     && git reset --hard "$from" \
-    && git push --force \
-    && post) || cleanup
+    && git push --force) || cleanup
 fi
 
 git remote set-url origin "$cur_origin"
+
+post
