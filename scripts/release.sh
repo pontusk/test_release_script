@@ -28,8 +28,7 @@ function post {
     (git checkout "$from" && {
       message="$(git log -1 --pretty=%B)"
       if [[ $message =~ (Bump version)|(Release to) ]]; then
-        git cherry-pick HEAD~1
-        echo "Removing commit '$message'"
+        git cherry-pick HEAD~1 && git commit --allow-empty
       fi
     } && git push --no-verify origin main "$from") || return 1
 
