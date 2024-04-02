@@ -47,7 +47,7 @@ git pull origin "$to" || exit 1
 git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of 'from' in the 'to' branch
-ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lape '$F[0]')"
+ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lane 'print $F[0]')"
 
 function tag {
   ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
