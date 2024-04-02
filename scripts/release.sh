@@ -30,8 +30,7 @@ function post {
       if [[ $message =~ (Bump version)|(Release to) ]]; then
         hash="$(git log -n 1 --pretty=format:"%H")"
         git checkout main || return 1
-        git cherry-pick "$hash" \
-          && git commit --allow-empty \
+        git cherry-pick --allow-empty "$hash" \
           && git cherry-pick --continue
       fi
     } && git push --no-verify origin main "$from") || return 1
