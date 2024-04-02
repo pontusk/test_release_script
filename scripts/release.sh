@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-red=$(tput setaf 2)
+red=$(tput setaf 1)
 normal=$(tput setaf 7)
 
 command -v op >/dev/null 2>&1 || {
