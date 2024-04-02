@@ -58,7 +58,7 @@ git fetch || exit 1
 ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lane '{ print $F[0] }')"
 
 function tag {
-  ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
+  ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+.*)",?/$1/' package.json)
   git tag "v$ver" || return 1
 }
 
