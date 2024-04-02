@@ -47,14 +47,14 @@ git pull origin "$to" || exit 1
 git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of 'from' in the 'to' branch
-ahead="$(git rev-list --left-right --count "$to"..."$from")"
+ahead="$(git rev-list --left-right --count "$to"..."$from" | awk '{ print $0 }')"
 
 function tag {
   ver=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
   git tag "v$ver" || return 1
 }
 
-if ! [[ $ahead =~ ^0\t ]]; then
+if ! [[ $ahead == "0" ]]; then
   echo "The '$to' branch is ahead by '$ahead' commits. Merge any quick fixes to '$to' into '$from' and try again."
   cleanup
   exit 1
