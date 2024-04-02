@@ -28,10 +28,11 @@ function post {
     (git checkout "$from" && {
       local message
       message="$(git log -1 --pretty=%B)"
-      if [[ $message =~ (Bump version)|(Release to) ]]; then
-        hash="$(git log -n 1 --pretty=format:"%H")"
-        git checkout main || return 1
-        git cherry-pick --allow-empty "$hash"
+      local revs
+      revs="$(git rev-list --left-right --count main..."$from")"
+      # If the latest commit is the one we want and it's the only difference between the branches
+      if [[ $message =~ (Bump version)|(Release to) ]] && [[ "$revs" == "0       1" ]]; then
+        git checkout main && git reset --hard "$from"
       fi
     } && git push --no-verify origin main "$from") || return 1
     git checkout "$cur_branch"
