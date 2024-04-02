@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 red=$(tput setaf 1)
+green=$(tput setaf 2)
 normal=$(tput setaf 7)
 
 command -v op >/dev/null 2>&1 || {
@@ -108,14 +109,20 @@ function question {
 question
 
 if [[ $to == "prod" ]]; then
-  (git checkout "$to" \
-    && git reset --hard "$from" \
-    && tag \
-    && git push --tags --force) || cleanup
+  (
+    git checkout "$to" \
+      && git reset --hard "$from" \
+      && tag \
+      && git push --tags --force \
+      && echo "${green}Successfully released to '${to}'.${normal}"
+  ) || cleanup
 else
-  (git checkout "$to" \
-    && git reset --hard "$from" \
-    && git push --force) || cleanup
+  (
+    git checkout "$to" \
+      && git reset --hard "$from" \
+      && git push --force \
+      && echo "${green}Successfully released to '${to}'.${normal}"
+  ) || cleanup
 fi
 
 post || {
