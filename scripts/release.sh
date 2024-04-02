@@ -24,8 +24,10 @@ function post {
 
 function cleanup_commit {
   message="$(git log -1 --pretty=%B)"
-  ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lane '{ print $F[0] }')"
-  if [[ $message =~ 'Bump version' ]]; then
+  cur_branch="$(git rev-parse --abbrev-ref HEAD)"
+  # Avoid removing commits if remote is up to date
+  ahead="$(git rev-list --left-right --count "$cur_branch"...origin/"$cur_branch" | perl -F -lane '{ print $F[0] }')"
+  if [[ $message =~ 'Bump version' ]] && ((ahead > 0)); then
     git reset --hard HEAD~1
     echo "Removing commit '$message'"
   fi
