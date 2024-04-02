@@ -170,13 +170,13 @@ if [[ $to == "prod" ]]; then
   (git checkout "$to" \
     && git reset --hard "$from" \
     && tag \
-    && git push --tags --force) || cleanup
+    && git push --tags --force \
+    && post) || cleanup
 else
   (git checkout "$to" \
     && git reset --hard "$from" \
-    && git push --force) || cleanup
+    && git push --force \
+    && post) || cleanup
 fi
 
 git remote set-url origin "$cur_origin"
-
-post
