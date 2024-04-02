@@ -13,7 +13,7 @@ fi
 release_branch="$2"
 usage="scripts/$(basename "$0") <package name|'repo'> [<release branch>]"
 
-old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
+old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+.*)",?/$1/' package.json)
 version=
 
 function check_version {
