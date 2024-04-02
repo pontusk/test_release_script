@@ -11,7 +11,7 @@ else
   package=" @timeedit/registration-$package"
 fi
 release_branch="$2"
-usage="scripts/$(basename "$0") <package name|'repo'>] [<release branch>]"
+usage="scripts/$(basename "$0") <package name|'repo'> [<release branch>]"
 
 old_version=$(perl -lane 'print if s/^\s*"version":\s?"(\d+\.\d+\.\d+)",?/$1/' package.json)
 version=
@@ -34,6 +34,9 @@ function question {
   read -r answer
   if [[ "$answer" == "" ]]; then
     echo "Keeping version $old_version."
+    if [ -n "$release_branch" ]; then
+      git commit -m "chore: Release to '$release_branch'."
+    fi
     exit 0
   fi
   if ! check_version "$answer"; then

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "release:staging": "scripts/bump_version.sh repo staging && scripts/release_prod.sh main staging",
-    "release:prod": "scripts/bump_version.sh repo prod && bash scripts/release_prod.sh staging prod"
+    "release:prod": "scripts/bump_version.sh repo prod && scripts/release_prod.sh staging prod"
   },
   "author": "",
   "license": "ISC"
