@@ -30,6 +30,8 @@ function cleanup_commit {
   cur_branch="$(git rev-parse --abbrev-ref HEAD)"
   # Avoid removing commits if remote is up to date
   ahead="$(git rev-list --left-right --count "$cur_branch"...origin/"$cur_branch" | perl -F -lane '{ print $F[0] }')"
+  echo "ahead $ahead"
+  echo "message $message"
   if [[ $message =~ (Bump version)\|(Release to) ]] && ((ahead > 0)); then
     git reset --hard HEAD~1
     echo "Removing commit '$message'"
