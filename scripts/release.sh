@@ -113,6 +113,7 @@ else
     && git push --force) || cleanup
 fi
 
+post || {
+  git remote set-url origin "$cur_origin"
+}
 git remote set-url origin "$cur_origin"
-
-post
