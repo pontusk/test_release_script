@@ -35,7 +35,7 @@ function question {
   if [[ "$answer" == "" ]]; then
     echo "Keeping version $old_version."
     if [ -n "$release_branch" ]; then
-      git commit -m "chore: Release to '$release_branch'."
+      git commit --allow-empty -m "chore: Release to '$release_branch'."
     fi
     exit 0
   fi
