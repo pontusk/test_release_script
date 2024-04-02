@@ -21,8 +21,20 @@ if [ -z "$from" ] || [ -z "$to" ]; then
 fi
 
 function post {
-  (git checkout "$from" \
-    && git push --no-verify) || return 1
+  if [[ "$from" == "main" ]]; then
+    (git checkout "$from" \
+      && git push --no-verify) || return 1
+  else
+    (git checkout "$from" && {
+      message="$(git log -1 --pretty=%B)"
+      if [[ $message =~ (Bump version)|(Release to) ]]; then
+        git cherry-pick HEAD~1
+        echo "Removing commit '$message'"
+      fi
+    } && git push --no-verify origin main "$from") || return 1
+
+  fi
+
 }
 
 function cleanup_commit {
