@@ -34,7 +34,7 @@ function question {
   read -r answer
   if [[ "$answer" == "" ]]; then
     echo "Keeping version $old_version."
-    if ! [[ "$release_branch" == "" ]]; then
+    if [ -n "$release_branch" ]; then
       git add . \
         && git commit -m "chore: Release to '$release_branch'."
     fi
