@@ -80,6 +80,7 @@ function cleanup {
 
 if [[ "$cur_branch" != "$from" ]]; then
   printf "\n${red}On the wrong branch. Swiching to '%s'. Please try again.${normal}\n\n" "$from"
+  cleanup
   exit 1
 fi
 
@@ -101,6 +102,7 @@ function tag {
 
 if ((ahead > 0)); then
   printf "\n${red}The '%s' branch is ahead by '%s' commits. Merge any quick fixes to '%s' into '%s' and try again.${normal}\n\n" "$to" "$ahead" "$to" "$from"
+  cleanup
   exit 1
 fi
 
@@ -127,14 +129,14 @@ if [[ $to == "prod" ]]; then
       && tag \
       && git push --force --tags origin "$to" \
       && echo "${green}Successfully released to '${to}'.${normal}"
-  ) || exit 1
+  ) || cleanup
 else
   (
     git checkout "$to" \
       && git reset --hard "$from" \
       && git push --force origin "$to" \
       && echo "${green}Successfully released to '${to}'.${normal}"
-  ) || exit 1
+  ) || cleanup
 fi
 
 post || {
