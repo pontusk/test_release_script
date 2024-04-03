@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+trap cleanup 1 2 3 6
+
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 normal=$(tput setaf 7)
@@ -139,5 +141,3 @@ post || {
   git remote set-url origin "$cur_origin"
 }
 git remote set-url origin "$cur_origin"
-
-trap cleanup SIGHUP SIGINT SIGQUIT SIGABRT
