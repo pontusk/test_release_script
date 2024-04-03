@@ -72,6 +72,7 @@ function cleanup_commit {
 function cleanup {
   cleanup_commit
   git checkout "$from" && cleanup_commit
+  echo "Cleanup happening"
   git remote set-url origin "$cur_origin"
 }
 
@@ -80,13 +81,13 @@ if [[ "$cur_branch" != "$from" ]]; then
   exit 1
 fi
 
-token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
+# token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
 
 git fetch || exit 1
 
 # Set remote url to one with the te-conbot token. Must be restored after the
 # script runs or if it fails!
-git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
+# git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of 'from' in the 'to' branch?
 ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lane '{ print $F[0] }')"
