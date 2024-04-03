@@ -90,6 +90,8 @@ git fetch || exit 1
 
 # Set remote url to one with the te-conbot token. Must be restored after the
 # script runs or if it fails!
+url_for_message="$(perl -ne 'if (/te-conbot/) { print "<project url from github>"; } else { print $_; }' <<<"$cur_origin")"
+echo "Setting remote url to accredited service account. Look for confirmation that remote url has been restored to '$url_for_message'. If you are suspicious that this did not occur, run \`git remote get-url origin\` to check. If the url looks wrong, run \`git remote set-url origin $url_for_message\` to fix it."
 # git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
 # How many commits are ahead of 'from' in the 'to' branch?
