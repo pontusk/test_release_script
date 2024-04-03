@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#
+
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 normal=$(tput setaf 7)
@@ -38,7 +38,9 @@ function post {
       if [[ "$message" =~ (Bump version)|(Release to) ]]; then
         echo "commit match"
       fi
-      # If the latest commit is the one we want and it's the only difference between the branches
+      # If the latest commit is one that the script created, and it's the only
+      # difference between the branches, rebase with main to make sure all
+      # branches are equal when releasing from a branch that is not main.
       if [[ "$message" =~ (Bump version)|(Release to) ]] && perl -ne 'exit 1 unless /0\s+1/' <<<"$revs"; then
         git checkout main \
           && git rebase "$from" \
@@ -57,9 +59,10 @@ function cleanup_commit {
   message="$(git log -1 --pretty=%B)"
   local cur_branch
   cur_branch="$(git rev-parse --abbrev-ref HEAD)"
-  # Avoid removing commits if remote is up to date
   local ahead
   ahead="$(git rev-list --left-right --count "$cur_branch"...origin/"$cur_branch" | perl -F -lane '{ print $F[0] }')"
+  # Remove commits that the script created if the release fails, but only if
+  # the changes are still not pushed to remote.
   if [[ $message =~ (Bump version)|(Release to) ]] && ((ahead > 0)); then
     git reset --hard HEAD~1
     echo "Removing commit '$message'"
@@ -74,17 +77,18 @@ function cleanup {
 
 if [[ "$cur_branch" != "$from" ]]; then
   printf "\n${red}On the wrong branch. Swiching to '%s'. Please try again.${normal}\n\n" "$from"
-  cleanup
   exit 1
 fi
 
-# token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
+token="$(op read 'op://Consume/GitHub Consume Service Account Token/credential')"
 
 git fetch || exit 1
 
-# git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
+# Set remote url to one with the te-conbot token. Must be restored after the
+# script runs or if it fails!
+git remote set-url origin "https://te-conbot:$token@github.com/timeedit/te-consume.git"
 
-# How many commits are ahead of 'from' in the 'to' branch
+# How many commits are ahead of 'from' in the 'to' branch?
 ahead="$(git rev-list --left-right --count "$to"..."$from" | perl -F -lane '{ print $F[0] }')"
 
 function tag {
@@ -94,7 +98,6 @@ function tag {
 
 if ((ahead > 0)); then
   printf "\n${red}The '%s' branch is ahead by '%s' commits. Merge any quick fixes to '%s' into '%s' and try again.${normal}\n\n" "$to" "$ahead" "$to" "$from"
-  cleanup
   exit 1
 fi
 
@@ -121,17 +124,19 @@ if [[ $to == "prod" ]]; then
       && tag \
       && git push --force --tags origin "$to" \
       && echo "${green}Successfully released to '${to}'.${normal}"
-  ) || cleanup
+  ) || exit 1
 else
   (
     git checkout "$to" \
       && git reset --hard "$from" \
       && git push --force origin "$to" \
       && echo "${green}Successfully released to '${to}'.${normal}"
-  ) || cleanup
+  ) || exit 1
 fi
 
 post || {
   git remote set-url origin "$cur_origin"
 }
 git remote set-url origin "$cur_origin"
+
+trap cleanup SIGHUP SIGINT SIGQUIT SIGABRT
